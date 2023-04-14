@@ -20,13 +20,13 @@
             <button class="grayer">AC</button>
             <button class="grayer">+/-</button>
             <button class="grayer">%</button>
-            <button class="orange">÷</button>
+            <button class="orange">/</button>
         </div>
         <div class="row">
             <button>7</button>
             <button>8</button>
             <button>9</button>
-            <button class="orange">x</button>
+            <button class="orange">*</button>
         </div>
         <div class="row">
             <button>4</button>
@@ -49,37 +49,84 @@
 
 
     <script>
-    //Operator stack
-    //Display queue
-        const add = (x, y) => x + y;
-        const subtract = (x, y) => x - y;
-        const multiply = (x, y) => x * y;
-        const divide = (x, y) => x / y;
-        const operate = (x, operator, y) => {
-            switch (operator){
-                case "+": 
-                    return add(x, y);
-                    break;
-                case "-":
-                        return subtract(x, y);
-                        break;
-                case "/":
-                        return divide(x, y);
-                        break;
-                case "*":
-                        return multiply(x, y);
-                        break;
-                default:
-                        return "ERROR";
+        //Operator stack
+        //Display queue
+        const operatorStack = [];
+        const displayQueue = [];
+        const shuntingYard = token => {
+            // Precedences PEMDAS
+            const precedence = {
+                "+": 1,
+                "-": 1,
+                "/": 2,
+                "*": 3,
             };
+
+            if (isNumeric(token)) {
+                // If the token is a number, push it to the queue
+                displayQueue.push(token);
+            } else if (operatorList.includes(token) || token === "=") {
+                // If the token is an operator, add it to the operator stack
+                if (operatorStack.length === 0) {
+                    operatorStack.push(token);
+                } else {
+                    while (
+                        operatorStack.length > 0 &&
+                        precedence[token] <= precedence[operatorStack[operatorStack.length - 1]]
+                    ) {
+                        // Pop operators off the stack and add them to the queue until
+                        // the operator at the top of the stack has lower precedence
+                        const operator = operatorStack.pop();
+                        displayQueue.push(operator);
+                    }
+                    displayQueue.push(operatorStack.pop());
+                }
+            }
         };
-        const operatorList = ["+/-", "÷", "%", "x", "-", "+", "="];
-        function clear () {
+
+
+        const evaluatePostfixExpression = (expression) => {
+            const stack = [];
+            for (let i = 0; i < expression.length; i++) {
+                const ch = expression[i];
+
+                if (isNumeric(ch)) {
+                    stack.push(parseInt(ch));
+                } else {
+                    const operation2 = stack.pop();
+                    const operation1 = stack.pop();
+
+                    switch (ch) {
+                        case "+":
+                            stack.push(operation1 + operation2);
+                            break;
+                        case "-":
+                            stack.push(operation1 - operation2);
+                            break;
+                        case "*":
+                            stack.push(operation1 * operation2);
+                            break;
+                        case "/":
+                            stack.push(operation1 / operation2);
+                            break;
+                        default:
+                            throw new Error("Invalid operator: " + ch);
+                    }
+                }
+
+            }
+            return stack.pop();
+        };
+
+        const isNumeric = x => !(isNaN(x));
+        const operatorList = ["/", "%", "*", "-", "+"];
+        function clear() {
             calculations.textContent = "";
-        }
-        function appendNumber (button) {
+
+        };
+        function appendNumber(button) {
             calculations.textContent += button.textContent;
-        }
+        };
 
         let firstNumber = null;
         let secondNumber = null;
@@ -95,11 +142,25 @@
                 setTimeout(() => {
                     button.style.backgroundColor = "";
                 }, 50);
-                if (button.textContent === "AC"){
-                     clear();
+                if (button.textContent === "AC") {
+                    clear();
+                } else if (isNumeric(button.textContent)) {
+                    appendNumber(button);
+                    shuntingYard(button.textContent);
+                } else if (operatorList.includes(button.textContent)) {
+                    shuntingYard(button.textContent);
+                } else if (button.textContent === "=") {
+                    shuntingYard(button.textContent);
+                    const result = evaluatePostfixExpression(displayQueue);
+                    calculations.textContent = result;
+                    console.log(result);
+                    displayQueue.push(result);
+                    operatorStack.length = 0;
+                    displayQueue.length = 0;
                 }
             });
         });
+        console.log(displayQueue);
 
     </script>
 </body>
