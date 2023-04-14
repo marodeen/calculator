@@ -11,10 +11,9 @@
 
 <body>
     <h1>Apple Calculator Clone</h1>
-    <h2>By Marodeen Shamonei</h2>
     <div class="container">
         <div class="display">
-            <div class="calculations"></div>
+            <div class="calculations">123,456,789</div>
         </div>
         <div class="row">
             <button class="grayer">AC</button>
@@ -54,32 +53,25 @@
         const subtract = (x, y) => x - y;
         const multiply = (x, y) => x * y;
         const divide = (x, y) => x / y;
-        const operate = (x, operator, y) => {
+        const operate = (x, y, operator) => {
             if (operator === "+") return add(x, y);
             else if (operator === "-") return subtract(x, y);
             else if (operator === "/") return divide(x, y);
             else if (operator === "*") return multiply(x, y);
             else return "ERROR";
         };
-        const operatorList = ["+/-", "÷", "%", "x", "-", "+", "="];
-
 
         const btn = document.querySelectorAll("button");
-        const equalsBtn = document.querySelector(".equals");
-        const calculations = document.querySelector(".calculations");
-        const operator = [];
         btn.forEach(button => {
             button.addEventListener("click", () => {
                 button.style.backgroundColor = "lightgray";
                 setTimeout(() => {
                     button.style.backgroundColor = "";
                 }, 50);
-                if (button.textContent === "AC") calculations.textContent = "";
-                else if (!(operatorList.includes(button.textContent))) calculations.textContent += button.textContent;
-                else calculations.repl;
             });
         });
-        
+
+
         // Operation Variables
         // const firstNumber;
         // const operator;
