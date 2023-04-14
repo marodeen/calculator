@@ -11,9 +11,10 @@
 
 <body>
     <h1>Apple Calculator Clone</h1>
+    <h2>By Marodeen Shamonei</h2>
     <div class="container">
         <div class="display">
-            <div class="calculations">123,456,789</div>
+            <div class="calculations"></div>
         </div>
         <div class="row">
             <button class="grayer">AC</button>
@@ -48,34 +49,58 @@
 
 
     <script>
-        // Operator Functions
+    //Operator stack
+    //Display queue
         const add = (x, y) => x + y;
         const subtract = (x, y) => x - y;
         const multiply = (x, y) => x * y;
         const divide = (x, y) => x / y;
-        const operate = (x, y, operator) => {
-            if (operator === "+") return add(x, y);
-            else if (operator === "-") return subtract(x, y);
-            else if (operator === "/") return divide(x, y);
-            else if (operator === "*") return multiply(x, y);
-            else return "ERROR";
+        const operate = (x, operator, y) => {
+            switch (operator){
+                case "+": 
+                    return add(x, y);
+                    break;
+                case "-":
+                        return subtract(x, y);
+                        break;
+                case "/":
+                        return divide(x, y);
+                        break;
+                case "*":
+                        return multiply(x, y);
+                        break;
+                default:
+                        return "ERROR";
+            };
         };
+        const operatorList = ["+/-", "÷", "%", "x", "-", "+", "="];
+        function clear () {
+            calculations.textContent = "";
+        }
+        function appendNumber (button) {
+            calculations.textContent += button.textContent;
+        }
+
+        let firstNumber = null;
+        let secondNumber = null;
+        const operator = [];
+
 
         const btn = document.querySelectorAll("button");
+        const equalsBtn = document.querySelector(".equals");
+        const calculations = document.querySelector(".calculations");
         btn.forEach(button => {
             button.addEventListener("click", () => {
                 button.style.backgroundColor = "lightgray";
                 setTimeout(() => {
                     button.style.backgroundColor = "";
                 }, 50);
+                if (button.textContent === "AC"){
+                     clear();
+                }
             });
         });
 
-
-        // Operation Variables
-        // const firstNumber;
-        // const operator;
-        // const secondNumber;        
     </script>
 </body>
 
