@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,6 +8,7 @@
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <h1>Apple Calculator Clone</h1>
     <div class="container">
@@ -17,7 +19,7 @@
             <button class="grayer">AC</button>
             <button class="grayer">+/-</button>
             <button class="grayer">%</button>
-            <button class="orange">/</button>
+            <button class="orange">÷</button>
         </div>
         <div class="row">
             <button>7</button>
@@ -47,17 +49,28 @@
 
     <script>
         // Operator Functions
-        const add = (x,y) => x + y;
-        const subtract = (x,y) => x - y;
-        const multiply = (x,y) => x * y;
-        const divide = (x,y) => x / y;
-        const operate = (x,y,operator) => {
-            if (operator === "+") return add(x,y);
-            else if (operator === "-") return subtract(x,y);
-            else if (operator === "/") return divide(x,y);
-            else if (operator === "*") return multiply(x,y);
+        const add = (x, y) => x + y;
+        const subtract = (x, y) => x - y;
+        const multiply = (x, y) => x * y;
+        const divide = (x, y) => x / y;
+        const operate = (x, y, operator) => {
+            if (operator === "+") return add(x, y);
+            else if (operator === "-") return subtract(x, y);
+            else if (operator === "/") return divide(x, y);
+            else if (operator === "*") return multiply(x, y);
             else return "ERROR";
         };
+
+        const btn = document.querySelectorAll("button");
+        btn.forEach(button => {
+            button.addEventListener("click", () => {
+                button.style.backgroundColor = "lightgray";
+                setTimeout(() => {
+                    button.style.backgroundColor = "";
+                }, 50);
+            });
+        });
+
 
         // Operation Variables
         // const firstNumber;
@@ -65,4 +78,5 @@
         // const secondNumber;        
     </script>
 </body>
+
 </html>
