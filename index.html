@@ -42,7 +42,7 @@
         </div>
         <div class="row">
             <button class="zero">0</button>
-            <button>.</button>
+            <button id="point">.</button>
             <button class="equals orange" id="equals">=</button>
         </div>
     </div>
@@ -155,7 +155,15 @@
                     shuntingYard(display.textContent);
                     shuntingYard(value);
                     lastEventWasOperator = true;
+                } else if (target.id === "point") {
+                    if (display.textContent[display.textContent.length - 1] === ".") {
+                        return;
+                    }
+                    display.textContent += ".";
                 } else if (isNumeric(value)){
+                    if (display.textContent === "0"){
+                        return;
+                    }
                     if (lastEventWasOperator) {
                         display.textContent = value;
                     } else {
