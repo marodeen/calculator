@@ -81,13 +81,16 @@
                     operatorStack.push(token);
                 }
             } else if (token === "="){
-                displayQueue.push(operatorStack.pop());
+                while (operatorStack.length > 0){
+                    displayQueue.push(operatorStack.pop());
+                }
             }
         };
         
         const evaluatePostfixExpression = (expression) => {
 
             const stack = [];
+            let total = 0;
 
             // Loop through the postfix expression. 
             // If the value is a digit, push it to the stack.
@@ -95,23 +98,29 @@
             // perform the necessary operations.
             for (let i = 0; i < expression.length; i++){
                 let char = expression[i];
+                let operand1 = 0;
+                let operand2 = 0;
 
                 if (isNumeric(char)){
                     stack.push(char);
-                } else {
-                    const operand2 = Number(stack.pop());
-                    const operand1 = Number(stack.pop());
+                } else if (stack.length >= 1) {
+                    operand2 = Number(stack.pop());
+                    if (stack.length >= 1){ 
+                        operand1 = Number(stack.pop());
+                    }
+                    console.log(operand1);
                     if (char === "+"){
-                        return operand1 + operand2;
+                        total += operand1 + operand2;
                     } else if (char === "-"){
-                        return operand1 - operand2;
+                        total += operand1 - operand2;
                     } else if (char === "/"){
-                        return operand1 / operand2;
+                        total += operand1 / operand2;
                     } else if (char === "*"){
-                        return operand1 * operand2;
+                        total += operand1 * operand2;
                     }
                 }
             }
+            return total;
         };
 
         const btn = document.querySelectorAll("button");
@@ -126,6 +135,7 @@
                 // How do I make it work with double digits? Currently only works with single digits.
                 // Don't send individual digits to shunting yard. Only send them to the shunting
                 // yard if an operator or equals sign is pressed. 
+                // Display currentNumber until operator is pressed, 
 
                 button.style.backgroundColor = "lightgray";
                 setTimeout(() => {
@@ -142,8 +152,8 @@
                 } else if (target.id === "percent"){
                     display.textContent /= 100;
                 } else if (target.id === "add" || target.id === "subtract" || target.id === "divide" || target.id === "multiply"){
-                    shuntingYard(value);
                     shuntingYard(display.textContent);
+                    shuntingYard(value);
                     lastEventWasOperator = true;
                 } else if (isNumeric(value)){
                     if (lastEventWasOperator) {
@@ -151,11 +161,10 @@
                     } else {
                         display.textContent += value;
                     }
+                    lastEventWasOperator = false;
                 } else if (target.id === "equals"){
                     shuntingYard(display.textContent)
                     shuntingYard(value);
-                    console.log(displayQueue);
-                    console.log(operatorStack);
                     display.textContent = evaluatePostfixExpression(displayQueue);
                     displayQueue.length = 0;
                     operatorStack.length = 0;
