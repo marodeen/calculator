@@ -17,118 +17,91 @@
             <div class="calculations"></div>
         </div>
         <div class="row">
-            <button class="grayer">AC</button>
-            <button class="grayer">+/-</button>
-            <button class="grayer">%</button>
-            <button class="orange">÷</button>
+            <button class="grayer" id="clear">AC</button>
+            <button class="grayer" id="plusminus">+/-</button>
+            <button class="grayer" id="percent">%</button>
+            <button class="orange" id="divide">÷</button>
         </div>
         <div class="row">
             <button>7</button>
             <button>8</button>
             <button>9</button>
-            <button class="orange">x</button>
+            <button class="orange" id="multiply">x</button>
         </div>
         <div class="row">
             <button>4</button>
             <button>5</button>
             <button>6</button>
-            <button class="orange">-</button>
+            <button class="orange" id="subtract">-</button>
         </div>
         <div class="row">
             <button>1</button>
             <button>2</button>
             <button>3</button>
-            <button class="orange">+</button>
+            <button class="orange" id="add">+</button>
         </div>
         <div class="row">
             <button class="zero">0</button>
             <button>.</button>
-            <button class="equals orange">=</button>
+            <button class="orange" id="equals">=</button>
         </div>
     </div>
 
 
     <script>
-        const add = (x, y) => x + y;
-        const subtract = (x, y) => x - y;
-        const multiply = (x, y) => x * y;
-        const divide = (x, y) => x / y;
-        const operate = (x, operator, y) => {
-            switch (operator) {
-                case "+":
-                    return add(x, y);
-                    break;
-                case "-":
-                    return subtract(x, y);
-                    break;
-                case "/":
-                    return divide(x, y);
-                    break;
-                case "*":
-                    return multiply(x, y);
-                    break;
-                default:
-                    return "ERROR";
-            }
-        };
-
-        const operatorList = ["+/-", "÷", "%", "x", "-", "+", "="];
-
-        function clear() {
-            calculations.textContent = "";
-        }
-
-        function appendNumber(button) {
-            calculations.textContent += button.textContent;
-        }
-
-        let firstNumber = null;
-        let secondNumber = null;
-        let currentOperator = null;
-
         const btn = document.querySelectorAll("button");
-        const equalsBtn = document.querySelector(".equals");
-        const calculations = document.querySelector(".calculations");
+        const display = document.querySelector(".calculations");
+
+        let firstOperand = null;
+        let operator = null;
+        let currentOperand = "";
 
         btn.forEach((button) => {
-            button.addEventListener("click", () => {
+            button.addEventListener("click", (event) => {
                 button.style.backgroundColor = "lightgray";
                 setTimeout(() => {
                     button.style.backgroundColor = "";
                 }, 50);
 
-                const buttonText = button.textContent;
+                const target = event.target;
+                const value = target.textContent;
 
-                if (buttonText === "AC") {
-                    clear();
-                    firstNumber = null;
-                    secondNumber = null;
-                    currentOperator = null;
-                } else if (operatorList.includes(buttonText)) {
-                    currentOperator = buttonText;
-                    if (firstNumber !== null && secondNumber !== null) {
-                        const result = operate(firstNumber, currentOperator, secondNumber);
-                        calculations.textContent = result;
-                        firstNumber = result;
-                        secondNumber = null;
-                        currentOperator = null;
+                if (target.id === "clear") {
+                    firstOperand = null;
+                    operator = null;
+                    currentOperand = "";
+                    display.textContent = "";
+                } else if (target.id === "plusminus") {
+                    display.textContent *= -1;
+                } else if (target.id === "percent") {
+                    display.textContent = parseFloat(display.textContent) / 100;
+                } else if (target.id === "multiply" || target.id === "subtract" || target.id === "add" || target.id === "divide") {
+                    operator = value;
+                    firstOperand = parseFloat(display.textContent);
+                    currentOperand = "";
+                } else if (target.id === "equals") {
+                    if (operator){
+                        const secondOperand = parseFloat(display.textContent);
+                        if (operator === "+"){
+                            firstOperand += secondOperand;
+                        } else if (operator === "-"){
+                            firstOperand -= secondOperand;
+                        } else if (operator === "x"){
+                            firstOperand *= secondOperand;
+                        } else if (operator === "÷"){
+                            firstOperand /= secondOperand;
+                        }
                     }
+                    operator = null;
+                    currentOperand = firstOperand.toString();
+                    display.textContent = firstOperand;
+
                 } else {
-                    if (currentOperator === null) {
-                        if (firstNumber === null) {
-                            firstNumber = Number(buttonText);
-                        } else {
-                            firstNumber = Number(`${firstNumber}${buttonText}`);
-                        }
-                    } else {
-                        if (secondNumber === null) {
-                            secondNumber = Number(buttonText);
-                            calculations.textContent = button.textContent;
-                        } else {
-                            secondNumber = Number(`${secondNumber}${buttonText}`);
-                            calculations.textContent = `${calculations.textContent}${buttonText}`;
-                        }
+                    if (value === "." && currentOperand.includes(".")){
+                        return;
                     }
+                    currentOperand += value;
+                    display.textContent = currentOperand;
                 }
             });
         });
