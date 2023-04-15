@@ -159,7 +159,12 @@
                     if (display.textContent[display.textContent.length - 1] === ".") {
                         return;
                     }
-                    display.textContent += ".";
+                    if (lastEventWasOperator) {
+                        display.textContent = value;
+                    } else {
+                        display.textContent += value;
+                    }
+                    lastEventWasOperator = false;
                 } else if (isNumeric(value)){
                     if (display.textContent === "0"){
                         return;
