@@ -63,7 +63,6 @@
             };
 
             if (isNumeric(token)) {
-                // If the token is a number, push it to the queue
                 displayQueue.push(token);
             } else if (operatorList.includes(token) || token === "=") {
                 // If the token is an operator, add it to the operator stack
@@ -122,7 +121,8 @@
         const operatorList = ["/", "%", "*", "-", "+"];
         function clear() {
             calculations.textContent = "";
-
+            operatorStack.length = 0;
+            displayQueue.length = 0;
         };
         function appendNumber(button) {
             calculations.textContent += button.textContent;
