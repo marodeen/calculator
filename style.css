@@ -48,7 +48,7 @@ button {
     border-radius: 0 0 0 10px;
 }
 
-.row > .equals {
+.row > #equals {
     border-radius: 0 0 10px 0;
 }
 
